@@ -13,7 +13,7 @@ def signupuser(request):
         form = RegisterForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect(to='quotes:index')
+            return redirect(to='users/signup.html')
         else:
             return render(request, 'users/signup.html', context={"form": form})
 

@@ -30,7 +30,7 @@ class Tag(models.Model):
 class Quote(models.Model):
     quote = models.TextField()
     tags = models.ManyToManyField(Tag)
-    author = models.ForeignKey(Author, on_delete=models.CASCADE, default=None, null=True)
+    user = models.ForeignKey(Author, on_delete=models.CASCADE, default=None, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

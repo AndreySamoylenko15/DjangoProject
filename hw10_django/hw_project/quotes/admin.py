@@ -28,13 +28,12 @@ class TagAdmin(admin.ModelAdmin):
 
 @admin.register(Quote)
 class QuoteAdmin(admin.ModelAdmin):
-    list_display = ('id', 'author', 'get_tags', 'created_at')
+    list_display = ('id','author','get_tags','created_at')
     list_filter = ('tags', )
-    search_fields = ('tags', 'author', 'quote')
+    search_fields = ('tags','author','quote')
     ordering = ['id']
 
-
-    @admin.display(description='tags')
+    @admin.display(description='Author')
     def get_tags(self, obj):
-        return[t.name for t in obj.tags.all()]
+        return obj.author
         
