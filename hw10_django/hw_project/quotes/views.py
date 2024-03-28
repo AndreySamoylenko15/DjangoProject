@@ -17,7 +17,7 @@ def main(request, page=1):
     per_page = 10
     paginator = Paginator(list(quotes), per_page)
     quotes_on_page = paginator.page(page)
-    quotes = Quote.objects.filter(user=request.user).all() if request.user.is_authenticated else []
+    quotes = Quote.objects.filter(author=request.user).all() if request.user.is_authenticated else []
 
     return render(request, 'quotes/index.html', context= {'quotes': quotes_on_page})
 
@@ -28,7 +28,7 @@ def tag(request):
         form = TagForm(request.POST)
         if form.is_valid():
             tag = form.save(commit=False)
-            tag.user = request.user
+            tag.author=request.user
             tag.save()
             return redirect(to='quotes:main')
         else:
@@ -39,15 +39,15 @@ def tag(request):
 
 @login_required
 def quote(request):
-    tags = Tag.objects.filter(user=request.user).all()
+    tags = Tag.objects.filter(author=request.user).all()
 
     if request.method == 'POST':
         form = QuoteForm(request.POST)
         if form.is_valid():
             new_quote = form.save(commit=False)
-            new_quote.user = request.user
+            new_quote.author=request.user
             new_quote.save()
-            choice_tags = Tag.objects.filter(name__in=request.POST.getlist('tags'), user=request.user)
+            choice_tags = Tag.objects.filter(name__in=request.POST.getlist('tags'), author=request.user)
             for tag in choice_tags.iterator():
                 new_quote.tags.add(tag)
 
@@ -59,19 +59,19 @@ def quote(request):
 
 @login_required
 def detail(request, quote_id):
-    quote = get_object_or_404(Quote, pk=quote_id, user=request.user)
+    quote = get_object_or_404(Quote, pk=quote_id, author=request.user)
     return render(request, 'quotes/detail.html', {"quote": quote})
 
 
 @login_required
 def set_done(request, note_id):
-    Quote.objects.filter(pk=note_id, user=request.user).update(done=True)
+    Quote.objects.filter(pk=note_id, author=request.user).update(done=True)
     return redirect(to='quotes:main')
 
 
 @login_required
 def delete_note(request, note_id):
-    Quote.objects.get(pk=note_id, user=request.user).delete()
+    Quote.objects.get(pk=note_id, author=request.user).delete()
     return redirect(to='quotes:main')
 
 
