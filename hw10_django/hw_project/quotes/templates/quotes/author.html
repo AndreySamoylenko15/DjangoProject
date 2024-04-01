@@ -1,0 +1,13 @@
+{% extends 'base_generic.html' %}
+
+{% block content %}
+<h1>Quotes by {{ author.name }}</h1>
+<ul>
+    {% for quote in quotes %}
+        <li>{{ quote.text }}</li>
+        <a href="{% url 'author_quotes' author.name %}">{{ author.name }}</a>
+        <li>No quotes found.</li>
+        {% empty %}
+    {% endfor %}
+</ul>
+{% endblock %}

@@ -20,10 +20,10 @@ class TagForm(ModelForm):
 
 class AuthorForm(ModelForm):
     fullname = CharField(max_length=40, min_length=2, widget=TextInput(attrs={"class": "form-control"}))
-    born_date  = DateField(widget=DateInput(attrs={"class": "form-control"}))  #birth_date
+    born_date  = DateField(widget=DateInput(attrs={"class": "form-control"})) 
     born_location = CharField(max_length=150,widget=TextInput(attrs={"class": "form-control",}),)
     description = CharField(max_length=40, min_length=30, widget=TextInput(attrs={"class": "form-control"}))
 
     class Meta:
         model = Author
-        fields = ['fullname', 'born_date',"born_location", 'description',  ]
+        fields = ['fullname', 'born_date',"born_location", 'bio',  ]
