@@ -3,6 +3,7 @@ from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from .forms import TagForm, QuoteForm, AuthorForm
 from .models import Tag, Quote, Author
+from django.db.models import Count
 
 
 
@@ -16,16 +17,24 @@ def main(request, page=1):
     return render(request, "quotes/index.html", context={"quotes": quotes_on_page, 'paginator': paginator})
 
 
+
+
+
+
+def list_author(request, author_name):
+    author = get_object_or_404(Author, fullname=author_name)
+    return render(request, 'author.html', {'author': author})
+
+def tag_detail(request, tag_name):
+    tag = get_object_or_404(Tag, name=tag_name)
+    quotes = Quote.objects.filter(tags=tag).order_by("-created_at")
+    return render(request, 'quotes/tag_detail.html', {'tag': tag, 'quotes': quotes})
+
+
 def author_quotes(request, author_name):
     author = get_object_or_404(Author, name=author_name)
-    quotes = Quote.objects.filter(author=author)
-    return render(request, 'quotes/author_quotes.html', {'author': author, 'quotes': quotes})
-
-
-def list_authors(request):
-    authors = Author.objects.all()
-    return render(request, 'authors.html', {'authors': authors})
-
+    quotes = Quote.objects.filter(authors=author)
+    return render(request, 'quotes/author_quote.html', {'author': author, 'quotes': quotes})
 
 @login_required
 def tag(request):
@@ -53,24 +62,6 @@ def add_quote(request):
         form = QuoteForm()
 
     return render(request, 'quotes/quote.html', {'form': form})
-# def add_quote(request):
-#     tags = Tag.objects.filter(author=request.user).all()
-
-#     if request.method == 'POST':
-#         form = QuoteForm(request.POST)
-#         if form.is_valid():
-#             new_quote = form.save(commit=False)
-#             new_quote.author=request.user
-#             new_quote.save()
-#             choice_tags = Tag.objects.filter(name__in=request.POST.getlist('tags'), author=request.user)
-#             for tag in choice_tags.iterator():
-#                 new_quote.tags.add(tag)
-
-#             return redirect(to='quotes:main')
-#         else:
-#             return render(request, 'quotes/quote.html', {"tags": tags, 'form': form})
-
-#     return render(request, 'quotes/quote.html', {"tags": tags, 'form': QuoteForm()})
 
 @login_required
 def detail(request, quote_id):
